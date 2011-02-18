@@ -59,7 +59,7 @@ describe Guard::MustacheJsGuard do
     let(:paths)       { ['app/mustache/x/y/foo.html', 'app/mustache/x/z/bar-baz.js'] }
     let(:template)    { '{{#user}}<p>Hi, {{name}}</p>{{/user}}' }
     let(:output_path) { "public/javascripts/mustache-templates.js" }
-    let(:message)     { "Adding to #{output_path}: #{paths.join(', ')}" }
+    let(:message)     { "Added to #{output_path}: #{paths.join(', ')}" }
     let(:output)      { <<-OUTPUT }
 var mustache_templates = {};
 mustache_templates.x = {};
@@ -82,7 +82,7 @@ OUTPUT
   end
   
   def assert_notifies(message)
-    ::Guard::UI.should_receive(:info).with(message, :reset => true)
+    Guard::Notifier.should_receive(:notify).with(message, :title => 'MustacheJS')
   end
   
   def assert_file_present(path)

@@ -42,13 +42,13 @@ module Guard
     end
     
     def modify_template(template, paths)
-      notify paths
       paths.each do |path|
         key, raw = convert_to_js path
         key = key.split '/'
         key.unshift options[:variable].clone
         write_key_value template, key, raw
       end
+      notify paths
       template
     end
     
@@ -62,8 +62,8 @@ module Guard
     end
     
     def notify(paths)
-      message = "Adding to #{options[:output]}: #{paths.join(', ')}"
-      ::Guard::UI.info message, :reset => true
+      message = "Added to #{options[:output]}: #{paths.join(', ')}"
+      ::Guard::Notifier.notify message, :title => "MustacheJS"
     end
     
     def convert_to_js(path)
