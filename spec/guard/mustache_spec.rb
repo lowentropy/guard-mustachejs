@@ -59,6 +59,7 @@ describe Guard::MustacheJsGuard do
     let(:paths)       { ['app/mustache/x/y/foo.html', 'app/mustache/x/z/bar-baz.js'] }
     let(:template)    { '{{#user}}<p>Hi, {{name}}</p>{{/user}}' }
     let(:output_path) { "public/javascripts/mustache-templates.js" }
+    let(:message)     { "Adding to #{output_path}: #{paths.join(', ')}" }
     let(:output)      { <<-OUTPUT }
 var mustache_templates = {};
 mustache_templates.x = {};
@@ -75,8 +76,13 @@ OUTPUT
       assert_reads(paths[0], template)
       assert_reads(paths[1], template)
       assert_writes(output_path, output)
+      assert_notifies(message)
       subject.run_on_change(paths)
     end
+  end
+  
+  def assert_notifies(message)
+    ::Guard::UI.should_receive(:info).with(message, :reset => true)
   end
   
   def assert_file_present(path)

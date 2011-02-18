@@ -42,6 +42,7 @@ module Guard
     end
     
     def modify_template(template, paths)
+      notify paths
       paths.each do |path|
         key, raw = convert_to_js path
         key = key.split '/'
@@ -58,6 +59,11 @@ module Guard
         prefix << '.' << part
         write_once template, "#{prefix} = #{key.any? ? '{}' : value};"
       end
+    end
+    
+    def notify(paths)
+      message = "Adding to #{options[:output]}: #{paths.join(', ')}"
+      ::Guard::UI.info message, :reset => true
     end
     
     def convert_to_js(path)
