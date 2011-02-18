@@ -64,13 +64,16 @@ var mustache_templates = {};
 mustache_templates.x = {};
 mustache_templates.x.y = {};
 mustache_templates.x.y.foo = "#{template}";
+mustache_templates.x.z = {};
+mustache_templates.x.z.bar_baz_js = "#{template}";
 OUTPUT
     
-    subject { Guard::MustacheJsGuard.new [watcher] }
+    subject { Guard::MustacheJsGuard.new watchers }
     
     it 'should write the correct template' do
       assert_file_absent output_path
       assert_reads(paths[0], template)
+      assert_reads(paths[1], template)
       assert_writes(output_path, output)
       subject.run_on_change(paths)
     end

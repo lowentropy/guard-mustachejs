@@ -45,7 +45,7 @@ module Guard
       paths.each do |path|
         key, raw = convert_to_js path
         key = key.split '/'
-        key.unshift options[:variable]
+        key.unshift options[:variable].clone
         write_key_value template, key, raw
       end
       template
