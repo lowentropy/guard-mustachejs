@@ -1,0 +1,68 @@
+= Guard for MustacheJS templates
+
+Guard::MustacheJs concatenates all your mustache templates into a single javascript file. Your templates are stored in a global object named 'mustache_templates' by default.
+
+
+== Install
+
+First, install {guard}[http://github.com/guard/guard]. Then, install the gem:
+
+    gem install guard-mustachejs
+
+Or you can add it to your Gemfile:
+
+    gem 'guard-mustachejs'
+
+To add the guard definition for mustachejs to your Guardfile, execute:
+
+    guard init coffeescript
+
+
+== Usage
+
+By default, guard-mustachejs will look for mustache templates in app/mustache/**/*.html. Let's say you have the following files:
+
+    app/mustache/home/banner.html
+    app/mustache/table/row.html
+
+Guard will pull these files into a single javascript resource located at:
+
+    public/javascripts/mustache-templates.js
+
+Assuming you have included mustache.js, you can then render your templates with:
+
+    Mustache.to_html(mustache_templates.home.banner, root)
+    Mustache.to_html(mustache_templates.table.row, root)
+    
+
+== Guardfile and options
+
+By default, guard-mustachejs will look for mustache templates in app/mustache/**/*.html. The default guard clause looks like this:
+
+    guard 'mustachejs' do
+      watch(%r{app/mustache/(.+)\.html})
+    end
+
+You can change the output javascript file path and the name of the global variable used to store the templates. You can even have multiple template targets, like so:
+
+    guard 'mustachejs',
+      :output => 'public/javascripts/js-templates.js',
+      :variable => 'js_templates' do
+      watch(%r{app/mustache/(.+)\.js})
+    end
+    
+    guard 'mustachejs',
+      :output => 'public/javascripts/html-templates.js',
+      :variable => 'html_templates' do
+      watch(%r{app/mustache/(.+)\.html})
+    end
+
+
+== Authors
+
+{Nathan Matthews}[http://github.com/lowentropy]
+
+
+== Acknowledgement
+
+Thanks to the {Guard Team}[https://github.com/guard/guard/contributors] and to all the guard gem {authors}[https://github.com/guard], especially {Michael Kessler}[https://github.com/netzpirat] for his excellent {guard-coffeescript}[https://github.com/netzpirat/guard-coffeescript] gem, which was the inspiration for this one.

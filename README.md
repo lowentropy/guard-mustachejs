@@ -1,1 +1,0 @@
-= Guard for MustacheJS templates
