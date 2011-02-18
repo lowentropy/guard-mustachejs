@@ -54,8 +54,9 @@ describe Guard::MustacheJsGuard do
   end
   
   describe "#run_on_change" do
-    let(:watcher)     { Guard::Watcher.new(%r{app/mustache/(.+).html}) }
-    let(:paths)       { ['app/mustache/x/y/foo.html'] }
+    let(:patterns)    { [%r{app/mustache/(.+).html}, %r{app/mustache/(.*)}] }
+    let(:watchers)    { patterns.map {|p| Guard::Watcher.new(p) }}
+    let(:paths)       { ['app/mustache/x/y/foo.html', 'app/mustache/x/z/bar-baz.js'] }
     let(:template)    { '{{#user}}<p>Hi, {{name}}</p>{{/user}}' }
     let(:output_path) { "public/javascripts/mustache-templates.js" }
     let(:output)      { <<-OUTPUT }

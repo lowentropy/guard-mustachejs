@@ -67,7 +67,7 @@ module Guard
             raise "No capture groups in guard pattern for mustache"
           end
           js = File.read(path).inspect
-          return base_name, js
+          return base_name.gsub(/[-.]/,'_'), js
         end
       end
       raise "No matcher matched '#{path}'"
