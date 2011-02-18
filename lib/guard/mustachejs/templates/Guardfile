@@ -1,3 +1,3 @@
 guard 'mustachejs' do
-  watch(%r{app/views/mustache/(.+)})
+  watch(%r{app/mustache/(.+).html})
 end
