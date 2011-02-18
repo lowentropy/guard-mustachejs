@@ -27,11 +27,12 @@ module Guard
     
     def read_template
       declaration = "var #{options[:variable]} = {};"
-      if File.exists? options[:output]
-        File.read(options[:output]).sub /^var .*/, declaration
-      else
-        "#{declaration}\n\n"
-      end
+      template = File.read(options[:output]) if File.exists?(options[:output])
+      write_once(template || "", declaration)
+    end
+    
+    def write_once(template, line)
+      template.tap { template << line << "\n" unless template.include? line }
     end
     
     def write_template(template)
@@ -43,15 +44,20 @@ module Guard
     def modify_template(template, paths)
       paths.each do |path|
         key, raw = convert_to_js path
-        prefix = "#{options[:variable]}['#{key}'] = "
-        re = /^#{Regexp.escape(prefix)}.*/
-        if template =~ re
-          template.gsub re, raw
-        else
-          template << prefix << raw << ";\n"
-        end
+        key = key.split '/'
+        key.unshift options[:variable]
+        write_key_value template, key, raw
       end
       template
+    end
+    
+    def write_key_value(template, key, value)
+      prefix = key.shift
+      until key.empty?
+        part = key.shift
+        prefix << '.' << part
+        write_once template, "#{prefix} = #{key.any? ? '{}' : value};"
+      end
     end
     
     def convert_to_js(path)
